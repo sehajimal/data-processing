@@ -1,0 +1,36 @@
+name: build script for clean.c		
+
+on:							
+  push:
+    branches: [ "main" ]			
+
+jobs:
+  build:						
+    runs-on: ubuntu-latest			
+    steps:
+      - uses: actions/checkout@v4		
+
+      - name: build clean			
+        run: gcc -o clean clean.c		
+
+      - name: upload binary			
+        uses: actions/upload-artifact@v4	
+        with:
+          name: Clean File			
+          path: ./clean
+
+  test:   
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      
+    - name: Run Clean
+      run: ./clean < wbcd.txt > cleaned_wbcd.txt  
+      
+    - name: Upload Cleaned WBCD txt file
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: Cleaned WBCD txt file
+        path: ./cleaned_wbcd.txt			
+
