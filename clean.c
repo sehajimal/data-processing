@@ -7,6 +7,7 @@ int main()
     int rows;
     int columns;
 
+
     float *array = read_data(&rows, &columns);          //calling in order to create 2Darray
 
     float (*array2D)[columns] = (float (*)[columns])array;      //cast it to the correct type ( float (*)[cols]) 
@@ -17,6 +18,10 @@ int main()
         }
         puts("");
     }
+
+    clean_impute(&rows, &columns, &array);
+    clean_delete(&rows, &columns, &array);
+
 
 
 
