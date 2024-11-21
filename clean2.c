@@ -25,12 +25,10 @@ float *read_data(int *rows, int *columns)
     return *p;
 }
 
-float *clean_delete(int *rows, int *columns, float *array2D[*columns])
+float *clean_delete(int *rows, int *columns, float (*array2D)[*columns])
 {
     float (*arraycopy)[*columns] = malloc(*rows**columns * sizeof(float));
-    int count = 0;
     int newRows = 0;
-    long new_size = newRows * *columns;
 
     if (arraycopy == NULL)
     {
@@ -39,53 +37,57 @@ float *clean_delete(int *rows, int *columns, float *array2D[*columns])
 
     for (int i=0; i<*rows; i++) 
     {
+        int remove = 0;
         for (int j=0; j<*columns; j++) 
         {
-            if (!isnan(array2D[i][j]))
+            if (isnan(array2D[i][j]))
             {
-                count = count + 1;
+                remove = 1;
+                break;
             }
         }
 
-        if (count == *columns)
-        {
-            rows = rows + 1;
+        if (remove == 0)
+        {                
             for (int j=0; j<*columns; j++) 
             {
-                arraycopy[i][j] = array2D[i][j];
+                arraycopy[newRows][j] = array2D[i][j];
             }
+            newRows = newRows + 1;
         }
     }
-    arraycopy = realloc(arraycopy, new_size*sizeof(float));
+    *rows = newRows;
+    arraycopy = realloc(arraycopy, newRows* *columns *sizeof(float));
     return *arraycopy;
 }
 
-float *clean_impute(int *rows, int *columns, float *array2D[*columns])
+float *clean_impute(int *rows, int *columns, float (*array2D)[*columns])
 {
-    for (int i=0; i<*columns; i++) 
+    for (int j=0; j<*columns; j++) 
     {
-        float total;
-        int count;
+        float total = 0;
+        int count = 0;
         float average;
-        for (int j=0; j<*rows; j++) 
+        for (int i=0; i<*rows; i++) 
         {
-            total = 0;
-            count = 0;
             if (!(isnan(array2D[i][j])))
             {
                 total += array2D[i][j];
                 count = count + 1;
             }
         }
+
         if (count > 0)
         {
             average = (total /count);
         }
-        else{
+
+        else
+        {
             average = 0;
         }
 
-        for (int j=0; j<*rows; j++) 
+        for (int i=0; i<*rows; i++) 
         {
             if ((isnan(array2D[i][j])))
             {
@@ -96,9 +98,16 @@ float *clean_impute(int *rows, int *columns, float *array2D[*columns])
     return *array2D;
 }
 
-//output_data() 
-//{
+void output_data(int *rows, int *columns, float (*array2D)[*columns]) 
+{
+    printf("%d %d\n", *rows, *columns);
 
-//}
+    for (int r = 0; r < *rows; r++) {
+        for (int c = 0; c < *columns; c++) {
+            printf("%.3f ", array2D[r][c]);
+        }
+        puts("");
+    }
+}
 
 
