@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@v4
       
     - name: Run Clean
-      run: ./clean < wbcd.txt > cleaned_wbcd.txt  
+      run: ./clean <wbcd.txt >cleaned_wbcd.txt  
       
     - name: Upload Cleaned WBCD txt file
       if: ${{ always() }}
